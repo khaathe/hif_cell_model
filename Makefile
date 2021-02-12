@@ -187,3 +187,8 @@ unzip:
 untar: 
 	cp ./archives/latest.tar .
 	tar -xzf latest.tar
+
+#user defined function
+
+run : 
+	make && ./${PROGRAM_NAME} && rm ./result/svg/*.svg && cp ./output/*.svg ./result/svg/
