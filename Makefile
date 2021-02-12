@@ -193,3 +193,6 @@ untar:
 run : 
 	make && ./${PROGRAM_NAME} && rm ./result/svg/*.svg && cp ./output/*.svg ./result/svg/
 
+debug : main.cpp $(ALL_OBJECTS)
+	$(COMPILE_COMMAND) -g -o $(PROGRAM_NAME) $(ALL_OBJECTS) main.cpp 
+
