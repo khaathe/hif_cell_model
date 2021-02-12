@@ -1,0 +1,12 @@
+#ignore physicell directory and files
+output/*
+result/*
+
+#ignore c++ files
+*.o
+
+#ignore physicell executable
+project2D
+
+#ignore vscode files
+.vscode/
