@@ -9,4 +9,4 @@ result/*
 project2D
 
 #ignore vscode files
-.vscode/
+#.vscode/
