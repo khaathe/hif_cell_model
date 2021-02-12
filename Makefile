@@ -192,3 +192,4 @@ untar:
 
 run : 
 	make && ./${PROGRAM_NAME} && rm ./result/svg/*.svg && cp ./output/*.svg ./result/svg/
+
