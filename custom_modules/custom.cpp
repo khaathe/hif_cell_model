@@ -69,7 +69,7 @@
 
 // declare cell definitions here 
 
-Cell_Definition test_cell; 
+Cell_Definition custom_cell; 
 
 void create_cell_types( void )
 {
@@ -80,9 +80,94 @@ void create_cell_types( void )
 	
 	SeedRandom( parameters.ints("random_seed") ); // or specify a seed here 
 	
-	// housekeeping 
+	initialize_default_cell_definition(); 
 	
-	initialize_default_cell_definition();
+	create_default_cell();
+
+	create_custom_cell();
+
+	build_cell_definitions_maps(); 
+	display_cell_definitions( std::cout ); 
+	
+	return; 
+}
+
+void setup_microenvironment( void )
+{
+	// set domain parameters 
+	
+/* now this is in XML 
+	default_microenvironment_options.X_range = {-1000, 1000}; 
+	default_microenvironment_options.Y_range = {-1000, 1000}; 
+	default_microenvironment_options.simulate_2D = true; 
+*/
+	
+	// make sure to override and go back to 2D 
+	// if( default_microenvironment_options.simulate_2D == false )
+	// {
+	// 	std::cout << "Warning: overriding XML config option and setting to 2D!" << std::endl; 
+	// 	default_microenvironment_options.simulate_2D = true; 
+	// }
+	
+/* now this is in XML 	
+	// no gradients need for this example 
+
+	default_microenvironment_options.calculate_gradients = false; 
+	
+	// set Dirichlet conditions 
+
+	default_microenvironment_options.outer_Dirichlet_conditions = true;
+	
+	// if there are more substrates, resize accordingly 
+	std::vector<double> bc_vector( 1 , 38.0 ); // 5% o2
+	default_microenvironment_options.Dirichlet_condition_vector = bc_vector;
+	
+	// set initial conditions 
+	default_microenvironment_options.initial_condition_vector = { 38.0 }; 
+*/
+	
+	// put any custom code to set non-homogeneous initial conditions or 
+	// extra Dirichlet nodes here. 
+	
+	// initialize BioFVM 
+	
+	initialize_microenvironment(); 	
+	
+	return; 
+}
+
+void setup_tissue( void )
+{
+	// create some cells near the origin
+	
+	double cell_radius = cell_defaults.phenotype.geometry.radius;
+	double spacing = 2.0*cell_radius;
+	double tissue_radius = parameters.doubles("tissue_radius");
+
+	create_circular_tissue(-500.0, 0.0, cell_defaults, tissue_radius, spacing);
+
+	create_circular_tissue(500.0, 0.0, custom_cell, tissue_radius, spacing);
+
+	return; 
+}
+
+std::vector<std::string> my_coloring_function( Cell* pCell )
+{
+	// start with flow cytometry coloring 
+	
+	std::vector<std::string> output = false_cell_coloring_cytometry(pCell); 
+		
+	// if( pCell->phenotype.death.dead == false && pCell->type == 1 )
+	// {
+	// 	 output[0] = "black"; 
+	// 	 output[2] = "rgb(0, 153, 51)"; 
+	// }
+	
+	return output; 
+}
+
+void create_default_cell(void)
+{
 	cell_defaults.phenotype.secretion.sync_to_microenvironment( &microenvironment ); 
 	
 	// Name the default cell type 
@@ -128,10 +213,15 @@ void create_cell_types( void )
 	// set oxygen uptake / secretion parameters for the default cell type 
 	cell_defaults.phenotype.secretion.uptake_rates[oxygen_substrate_index] = 10; 
 	cell_defaults.phenotype.secretion.secretion_rates[oxygen_substrate_index] = 0; 
-	cell_defaults.phenotype.secretion.saturation_densities[oxygen_substrate_index] = 38; 
-	
-	// add custom data here, if any 
-	
+	cell_defaults.phenotype.secretion.saturation_densities[oxygen_substrate_index] = 38;
+}
+
+void create_custom_cell(void)
+{
+	// first find index for a few key variables. 
+	int apoptosis_model_index = cell_defaults.phenotype.death.find_death_model_index( "Apoptosis" );
+	int necrosis_model_index = cell_defaults.phenotype.death.find_death_model_index( "Necrosis" );
+	int oxygen_substrate_index = microenvironment.find_density_index( "oxygen" ); 
 
 	// Now, let's define another cell type. 
 	// It's best to just copy the default and modify it. 
@@ -139,98 +229,18 @@ void create_cell_types( void )
 	// make this cell type randomly motile, less adhesive, greater survival, 
 	// and less proliferative 
 	
-	test_cell = cell_defaults; 
-	test_cell.type = 1; 
-	test_cell.name = "test cell"; 
+	custom_cell = cell_defaults; 
+	custom_cell.type = 1; 
+	custom_cell.name = "test cell"; 
 	
 	// make sure the new cell type has its own reference phenotype
 	
-	test_cell.parameters.pReference_live_phenotype = &( test_cell.phenotype );  
-	test_cell.phenotype.secretion.uptake_rates[oxygen_substrate_index] = 10;
-	test_cell.phenotype.secretion.secretion_rates[oxygen_substrate_index] = 0;
-	test_cell.phenotype.secretion.saturation_densities[oxygen_substrate_index] = 38;
-	test_cell.phenotype.death.rates[necrosis_model_index] = 0.0;
+	custom_cell.parameters.pReference_live_phenotype = &( custom_cell.phenotype );  
+	custom_cell.phenotype.secretion.uptake_rates[oxygen_substrate_index] = 10;
+	custom_cell.phenotype.secretion.secretion_rates[oxygen_substrate_index] = 0;
+	custom_cell.phenotype.secretion.saturation_densities[oxygen_substrate_index] = 38;
+	custom_cell.phenotype.death.rates[necrosis_model_index] = 0.0;
 	// test_cell.phenotype.death.rates[apoptosis_model_index] = 0.0;
-
-
-	build_cell_definitions_maps(); 
-	display_cell_definitions( std::cout ); 
-	
-	return; 
-}
-
-void setup_microenvironment( void )
-{
-	// set domain parameters 
-	
-/* now this is in XML 
-	default_microenvironment_options.X_range = {-1000, 1000}; 
-	default_microenvironment_options.Y_range = {-1000, 1000}; 
-	default_microenvironment_options.simulate_2D = true; 
-*/
-	
-	// make sure to override and go back to 2D 
-	if( default_microenvironment_options.simulate_2D == false )
-	{
-		std::cout << "Warning: overriding XML config option and setting to 2D!" << std::endl; 
-		default_microenvironment_options.simulate_2D = true; 
-	}
-	
-/* now this is in XML 	
-	// no gradients need for this example 
-
-	default_microenvironment_options.calculate_gradients = false; 
-	
-	// set Dirichlet conditions 
-
-	default_microenvironment_options.outer_Dirichlet_conditions = true;
-	
-	// if there are more substrates, resize accordingly 
-	std::vector<double> bc_vector( 1 , 38.0 ); // 5% o2
-	default_microenvironment_options.Dirichlet_condition_vector = bc_vector;
-	
-	// set initial conditions 
-	default_microenvironment_options.initial_condition_vector = { 38.0 }; 
-*/
-	
-	// put any custom code to set non-homogeneous initial conditions or 
-	// extra Dirichlet nodes here. 
-	
-	// initialize BioFVM 
-	
-	initialize_microenvironment(); 	
-	
-	return; 
-}
-
-void setup_tissue( void )
-{
-	// create some cells near the origin
-	
-	double cell_radius = cell_defaults.phenotype.geometry.radius;
-	double spacing = 2.0*cell_radius;
-	double tissue_radius = parameters.doubles("tissue_radius");
-
-	create_circular_tissue(-500.0, 0.0, cell_defaults, tissue_radius, spacing);
-
-	create_circular_tissue(500.0, 0.0, test_cell, tissue_radius, spacing);
-
-	return; 
-}
-
-std::vector<std::string> my_coloring_function( Cell* pCell )
-{
-	// start with flow cytometry coloring 
-	
-	std::vector<std::string> output = false_cell_coloring_cytometry(pCell); 
-		
-	// if( pCell->phenotype.death.dead == false && pCell->type == 1 )
-	// {
-	// 	 output[0] = "black"; 
-	// 	 output[2] = "rgb(0, 153, 51)"; 
-	// }
-	
-	return output; 
 }
 
 void create_circular_tissue (double center_x, double center_y, Cell_Definition& cell_definition, double tissue_radius, double spacing)
@@ -266,4 +276,22 @@ void create_circular_tissue (double center_x, double center_y, Cell_Definition& 
 		j = 0;
 		dist = hypot( center_x-(center_x+i*spacing), center_y-(center_y+j*spacing) );
 	}
+}
+
+
+void my_custom_phenotype_update( Cell* pCell, Phenotype& phenotype, double dt )
+{
+	update_cell_and_death_parameters_O2_based(pCell, phenotype, dt);
+	my_custom_uptake_rates_update(pCell);
+	my_custom_secretion_rates_update(pCell);
+}
+
+void my_custom_uptake_rates_update(Cell* pCell)
+{
+
+}
+
+void my_custom_secretion_rates_update(Cell* pCell)
+{
+
 }

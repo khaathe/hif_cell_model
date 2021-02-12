@@ -76,7 +76,7 @@ void tumor_cell_phenotype_with_oncoprotein( Cell* pCell, Phenotype& phenotype, d
 
 // any additional cell types (beyond cell_defaults)
 
-extern Cell_Definition test_cell; 
+extern Cell_Definition custom_cell; 
 
 // custom cell phenotype functions could go here 
 
@@ -84,11 +84,21 @@ extern Cell_Definition test_cell;
 
 void create_cell_types( void );
 void setup_tissue( void ); 
-void create_circular_tissue (double center_x, double center_y, Cell_Definition& cell_definition, double tissue_radius, double spacing);
 
 // set up the BioFVM microenvironment 
 void setup_microenvironment( void ); 
 
 // custom pathology coloring function 
-
 std::vector<std::string> my_coloring_function( Cell* );
+
+//custom create function
+void create_circular_tissue (double center_x, double center_y, Cell_Definition& cell_definition, double tissue_radius, double spacing);
+void create_default_cell(void);
+void create_custom_cell(void);
+
+//custom update function
+void my_custom_phenotype_update( Cell* pCell, Phenotype& phenotype, double dt );
+void my_custom_uptake_rates_update(Cell* pCell);
+void my_custom_secretion_rates_update(Cell* pCell);
+
+
