@@ -82,9 +82,9 @@ void create_cell_types( void )
 	
 	initialize_default_cell_definition(); 
 	
-	create_default_cell();
+	create_default_cell_definition();
 
-	create_custom_cell();
+	create_custom_cell_definition();
 
 	build_cell_definitions_maps(); 
 	display_cell_definitions( std::cout ); 
@@ -166,7 +166,7 @@ std::vector<std::string> my_coloring_function( Cell* pCell )
 	return output; 
 }
 
-void create_default_cell(void)
+void create_default_cell_definition(void)
 {
 	cell_defaults.phenotype.secretion.sync_to_microenvironment( &microenvironment ); 
 	
@@ -216,7 +216,7 @@ void create_default_cell(void)
 	cell_defaults.phenotype.secretion.saturation_densities[oxygen_substrate_index] = 38;
 }
 
-void create_custom_cell(void)
+void create_custom_cell_definition(void)
 {
 	// first find index for a few key variables. 
 	int apoptosis_model_index = cell_defaults.phenotype.death.find_death_model_index( "Apoptosis" );
@@ -241,6 +241,8 @@ void create_custom_cell(void)
 	custom_cell.phenotype.secretion.saturation_densities[oxygen_substrate_index] = 38;
 	custom_cell.phenotype.death.rates[necrosis_model_index] = 0.0;
 	// test_cell.phenotype.death.rates[apoptosis_model_index] = 0.0;
+	custom_cell.functions.custom_cell_rule = simulate_metabolism;
+	custom_cell.custom_data.add_variable("hif", "dimensionless", 0.0);
 }
 
 void create_circular_tissue (double center_x, double center_y, Cell_Definition& cell_definition, double tissue_radius, double spacing)
@@ -294,4 +296,9 @@ void my_custom_uptake_rates_update(Cell* pCell)
 void my_custom_secretion_rates_update(Cell* pCell)
 {
 
+}
+
+void simulate_metabolism(Cell* pCell, Phenotype& phenotype, double dt)
+{
+	
 }

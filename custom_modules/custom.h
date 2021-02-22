@@ -93,12 +93,12 @@ std::vector<std::string> my_coloring_function( Cell* );
 
 //custom create function
 void create_circular_tissue (double center_x, double center_y, Cell_Definition& cell_definition, double tissue_radius, double spacing);
-void create_default_cell(void);
-void create_custom_cell(void);
+void create_default_cell_definition(void);
+void create_custom_cell_definition(void);
 
 //custom update function
 void my_custom_phenotype_update( Cell* pCell, Phenotype& phenotype, double dt );
 void my_custom_uptake_rates_update(Cell* pCell);
 void my_custom_secretion_rates_update(Cell* pCell);
 
-
+void simulate_metabolism(Cell* pCell, Phenotype& phenotype, double dt);
