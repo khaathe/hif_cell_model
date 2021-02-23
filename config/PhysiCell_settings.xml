@@ -87,7 +87,7 @@
 	</domain>
 	
 	<overall>
-		<max_time units="min">7200</max_time> <!-- 5 days * 24 h * 60 min -->
+		<max_time units="min">28800</max_time> <!-- 5 days * 24 h * 60 min -->
 		<time_units>min</time_units>
 		<space_units>micron</space_units>
 	
@@ -104,12 +104,12 @@
 		<folder>output</folder> <!-- use . for root --> 
 
 		<full_data>
-			<interval units="min">360</interval>
+			<interval units="min">1440</interval>
 			<enable>true</enable>
 		</full_data>
 		
 		<SVG>
-			<interval units="min">60</interval>
+			<interval units="min">1440</interval>
 			<enable>true</enable>
 		</SVG>
 		
@@ -156,7 +156,7 @@
 		<motile_cell_relative_adhesion type="double" units="dimensionless">0.05</motile_cell_relative_adhesion>
 		<motile_cell_apoptosis_rate type="double" units="1/min">0.0</motile_cell_apoptosis_rate> 
 		<motile_cell_relative_cycle_entry_rate type="double" units="dimensionless">0.1</motile_cell_relative_cycle_entry_rate>
-		<tissue_radius type="double" units="micrometers">170.0</tissue_radius> <!-- cell radius = 8 -->
+		<tissue_radius type="double" units="micrometers">80.0</tissue_radius> <!-- cell radius = 8 -->
 		<o2_hypoxic_threshold type="double" units="mmHg">15.0</o2_hypoxic_threshold>
 		<o2_hypoxic_response type="double" units="mmHg">8.0</o2_hypoxic_response>
 		<o2_hypoxic_saturation type="double" units="mmHg">4.0</o2_hypoxic_saturation>
