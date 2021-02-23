@@ -6,7 +6,6 @@
 			"label": "Make",
 			"command": "/usr/bin/make",
 			"args": [
-				"clean",
 				"debug"
 			],
 			"options": {

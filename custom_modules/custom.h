@@ -78,6 +78,8 @@ void tumor_cell_phenotype_with_oncoprotein( Cell* pCell, Phenotype& phenotype, d
 
 extern Cell_Definition custom_cell; 
 
+extern double hif_base_concentration;
+
 // custom cell phenotype functions could go here 
 
 // setup functions to help us along 
@@ -93,12 +95,15 @@ std::vector<std::string> my_coloring_function( Cell* );
 
 //custom create function
 void create_circular_tissue (double center_x, double center_y, Cell_Definition& cell_definition, double tissue_radius, double spacing);
-void create_default_cell(void);
-void create_custom_cell(void);
+void create_default_cell_definition(void);
+void create_custom_cell_definition(void);
 
 //custom update function
 void my_custom_phenotype_update( Cell* pCell, Phenotype& phenotype, double dt );
 void my_custom_uptake_rates_update(Cell* pCell);
 void my_custom_secretion_rates_update(Cell* pCell);
 
-
+void simulate_metabolism(Cell* pCell, Phenotype& phenotype, double dt);
+void compute_hif_concentration(Cell* pCell, Phenotype& phenotype, double dt);
+void compute_ldh_concentration(Cell* pCell, Phenotype& phenotype, double dt);
+void compute_pdh_concentration(Cell* pCell, Phenotype& phenotype, double dt);
