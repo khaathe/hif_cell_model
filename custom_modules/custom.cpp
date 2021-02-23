@@ -147,9 +147,9 @@ void setup_tissue( void )
 	double spacing = 2.0*cell_radius;
 	double tissue_radius = parameters.doubles("tissue_radius");
 
-	create_circular_tissue(-500.0, 0.0, cell_defaults, tissue_radius, spacing);
-
-	create_circular_tissue(500.0, 0.0, custom_cell, tissue_radius, spacing);
+	// create_circular_tissue(-500.0, 0.0, cell_defaults, tissue_radius, spacing);
+	// create_circular_tissue(500.0, 0.0, custom_cell, tissue_radius, spacing);
+	create_circular_tissue(0.0, 0.0, custom_cell, tissue_radius, spacing);
 
 	return; 
 }
@@ -165,8 +165,8 @@ std::vector<std::string> my_coloring_function( Cell* pCell )
 	{
 		 output[0] = "black"; 
 		 std::string color = "rgb(255, 0, 0)";
-		 if ( pCell->custom_data.variables[hif_index].value > hif_base_concentration) {
-			 color = "rg(0,0,255)";
+		 if ( pCell->custom_data[hif_index] > hif_base_concentration) {
+			 color = "rgb(0,0,255)";
 		 }
 		 output[2] = color; 
 	}
@@ -334,20 +334,33 @@ void simulate_metabolism(Cell* pCell, Phenotype& phenotype, double dt)
 void compute_hif_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 {
 	int o2_index = microenvironment.find_density_index("oxygen");
-	int o2_internalized_concentration = pCell->phenotype.molecular.internalized_total_substrates[o2_index];
+	double pO2 = pCell->nearest_density_vector()[o2_index];
+	
 	int hif_index = pCell->custom_data.find_variable_index("hif_concentration");
 
-	if ( o2_internalized_concentration >= pCell->parameters.o2_hypoxic_response ) {
+	if ( pO2 >= pCell->parameters.o2_hypoxic_response ) {
 		pCell->custom_data[hif_index] = hif_base_concentration;
 	} 
 	else {
-		pCell->custom_data[hif_index] = hif_base_concentration*exp( 2.5*(1-(o2_internalized_concentration/760.0) ) );
+		pCell->custom_data[hif_index] = hif_base_concentration*exp( 2.5*(1-(pO2/760.0) ) );
 	}
 }
 
 void compute_ldh_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 {
+	int hif_index = pCell->custom_data.find_variable_index("hif_concentration");
+	double hif_concentration = pCell->custom_data[hif_index];
+	
+	int ldh_index = pCell->custom_data.find_variable_index("ldh_concentration");
+	double ldh_concentration = pCell->custom_data[ldh_index];
+	double s = 0.0;
+	double y = 0.0;
+	double gama = 0.0;
+	double h = (s/(s+y)) + gama * (y/(s+y));
+	double r = 3.4 - 0.54;
+	ldh_concentration = ( 0.005 * h - 0.005 * ldh_concentration ) * r;
 
+	pCell->custom_data[ldh_index] = ldh_concentration;
 }
 
 void compute_pdh_concentration(Cell* pCell, Phenotype& phenotype, double dt)
