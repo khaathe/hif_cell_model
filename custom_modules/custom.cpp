@@ -222,6 +222,12 @@ void create_default_cell_definition(void)
 	cell_defaults.phenotype.secretion.uptake_rates[oxygen_substrate_index] = 10; 
 	cell_defaults.phenotype.secretion.secretion_rates[oxygen_substrate_index] = 0; 
 	cell_defaults.phenotype.secretion.saturation_densities[oxygen_substrate_index] = 38;
+
+	cell_defaults.custom_data.add_variable("hif_concentration", "dimensionless", hif_base_concentration);
+	cell_defaults.custom_data.add_variable("ldh_level", "dimensionless", 0.0);
+	cell_defaults.custom_data.add_variable("pdh_level", "dimensionless", 0.0);
+	cell_defaults.custom_data.add_variable("pdk_level", "dimensionless", 0.0);
+	
 }
 
 void create_custom_cell_definition(void)
@@ -251,17 +257,17 @@ void create_custom_cell_definition(void)
 	custom_cell.phenotype.death.rates[necrosis_model_index] = 0.0;
 	// test_cell.phenotype.death.rates[apoptosis_model_index] = 0.0;
 
-	//Custom data and funtions	
-	custom_cell.custom_data.add_variable("hif_concentration", "dimensionless", 0.0);
-	custom_cell.custom_data.add_variable("ldh_level", "dimensionless", 0.0);
-	custom_cell.custom_data.add_variable("pdh_level", "dimensionless", 0.0);
-	custom_cell.custom_data.add_variable("pdk_level", "dimensionless", 0.0);
-
-	custom_cell.parameters.o2_hypoxic_threshold = parameters.doubles("o2_hypoxic_threshold");
-	custom_cell.parameters.o2_hypoxic_response = parameters.doubles("o2_hypoxic_response");
-	custom_cell.parameters.o2_hypoxic_saturation = parameters.doubles("o2_hypoxic_saturation");
+	// custom_cell.parameters.o2_hypoxic_threshold = parameters.doubles("o2_hypoxic_threshold");
+	// custom_cell.parameters.o2_hypoxic_response = parameters.doubles("o2_hypoxic_response");
+	// custom_cell.parameters.o2_hypoxic_saturation = parameters.doubles("o2_hypoxic_saturation");
 	
 	//custom_cell.functions.custom_cell_rule = simulate_metabolism;
+
+	//Custom data and funtions	
+	// custom_cell.custom_data.add_variable("hif_concentration", "dimensionless", hif_base_concentration);
+	// custom_cell.custom_data.add_variable("ldh_level", "dimensionless", 0.0);
+	// custom_cell.custom_data.add_variable("pdh_level", "dimensionless", 0.0);
+	// custom_cell.custom_data.add_variable("pdk_level", "dimensionless", 0.0);
 }
 
 void create_circular_tissue (double center_x, double center_y, Cell_Definition& cell_definition, double tissue_radius, double spacing)
@@ -332,10 +338,10 @@ void compute_hif_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 	int hif_index = pCell->custom_data.find_variable_index("hif_concentration");
 
 	if ( o2_internalized_concentration >= pCell->parameters.o2_hypoxic_response ) {
-		pCell->custom_data.variables[hif_index].value = hif_base_concentration;
+		pCell->custom_data[hif_index] = hif_base_concentration;
 	} 
 	else {
-		pCell->custom_data.variables[hif_index].value = hif_base_concentration*exp( 2.5*(1-(o2_internalized_concentration/760.0) ) );
+		pCell->custom_data[hif_index] = hif_base_concentration*exp( 2.5*(1-(o2_internalized_concentration/760.0) ) );
 	}
 }
 
