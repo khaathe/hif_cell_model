@@ -2,20 +2,25 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"type": "cppbuild",
-			"label": "Make",
+			"type": "shell",
+			"label": "Build Debug",
 			"command": "/usr/bin/make",
 			"args": [
-				"debug"
+				"ARGS='-g'",
+				"all"
 			],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"problemMatcher": [
-				"$gcc"
+			"group": "build"
+		},
+		{
+			"type": "shell",
+			"label": "Clean Build Debug",
+			"command": "/usr/bin/make",
+			"args": [
+				"ARGS='-g'",
+				"clean",
+				"all"
 			],
-			"group": "build",
-			"detail": "compilateur : /usr/bin/cpp"
+			"group": "build"
 		}
 	]
 }

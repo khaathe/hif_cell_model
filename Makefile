@@ -30,9 +30,9 @@ ARCH := native # best auto-tuning
 # ARCH := nocona #64-bit pentium 4 or later 
 
 # CFLAGS := -march=$(ARCH) -Ofast -s -fomit-frame-pointer -mfpmath=both -fopenmp -m64 -std=c++11
-CFLAGS := -march=$(ARCH) -O3 -fomit-frame-pointer -mfpmath=both -fopenmp -m64 -std=c++11 -g
+CFLAGS := -march=$(ARCH) -O3 -fomit-frame-pointer -mfpmath=both -fopenmp -m64 -std=c++11
 
-COMPILE_COMMAND := $(CC) $(CFLAGS) 
+COMPILE_COMMAND := $(CC) $(CFLAGS) $(ARGS)
 
 BioFVM_OBJECTS := BioFVM_vector.o BioFVM_mesh.o BioFVM_microenvironment.o BioFVM_solvers.o BioFVM_matlab.o \
 BioFVM_utilities.o BioFVM_basic_agent.o BioFVM_MultiCellDS.o BioFVM_agent_container.o 
@@ -190,9 +190,5 @@ untar:
 
 #user defined function
 
-run : 
+run : data-cleanup
 	make && ./${PROGRAM_NAME} && rm ./result/svg/*.svg && cp ./output/*.svg ./result/svg/
-
-debug : main.cpp $(ALL_OBJECTS)
-	$(COMPILE_COMMAND) -g -o $(PROGRAM_NAME) $(ALL_OBJECTS) main.cpp 
-

@@ -5,11 +5,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Compile and Debug",
+            "name": "Run Debug",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/project2D",
-            "preLaunchTask": "Make",
+            "preLaunchTask": "Build Debug",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
