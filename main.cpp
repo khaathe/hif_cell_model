@@ -129,8 +129,8 @@ int main( int argc, char* argv[] )
 	// save a simulation snapshot 
 	
 	char filename[1024];
-	sprintf( filename , "%s/initial" , PhysiCell_settings.folder.c_str() ); 
-	save_PhysiCell_to_MultiCellDS_xml_pugi( filename , microenvironment , PhysiCell_globals.current_time ); 
+	// sprintf( filename , "%s/initial" , PhysiCell_settings.folder.c_str() ); 
+	// save_PhysiCell_to_MultiCellDS_xml_pugi( filename , microenvironment , PhysiCell_globals.current_time ); 
 	
 	// save a quick SVG cross section through z = 0, after setting its 
 	// length bar to 200 microns 
@@ -141,8 +141,8 @@ int main( int argc, char* argv[] )
 	
 	std::vector<std::string> (*cell_coloring_function)(Cell*) = my_coloring_function; 
 	
-	sprintf( filename , "%s/initial.svg" , PhysiCell_settings.folder.c_str() ); 
-	SVG_plot( filename , microenvironment, 0.0 , PhysiCell_globals.current_time, cell_coloring_function );
+	// sprintf( filename , "%s/initial.svg" , PhysiCell_settings.folder.c_str() ); 
+	// SVG_plot( filename , microenvironment, 0.0 , PhysiCell_globals.current_time, cell_coloring_function );
 	
 	display_citations(); 
 	
@@ -225,11 +225,11 @@ int main( int argc, char* argv[] )
 	
 	// save a final simulation snapshot 
 	
-	sprintf( filename , "%s/final" , PhysiCell_settings.folder.c_str() ); 
-	save_PhysiCell_to_MultiCellDS_xml_pugi( filename , microenvironment , PhysiCell_globals.current_time ); 
+	// sprintf( filename , "%s/final" , PhysiCell_settings.folder.c_str() ); 
+	// save_PhysiCell_to_MultiCellDS_xml_pugi( filename , microenvironment , PhysiCell_globals.current_time ); 
 	
-	sprintf( filename , "%s/final.svg" , PhysiCell_settings.folder.c_str() ); 
-	SVG_plot( filename , microenvironment, 0.0 , PhysiCell_globals.current_time, cell_coloring_function );
+	// sprintf( filename , "%s/final.svg" , PhysiCell_settings.folder.c_str() ); 
+	// SVG_plot( filename , microenvironment, 0.0 , PhysiCell_globals.current_time, cell_coloring_function );
 	
 	// timer 
 	
