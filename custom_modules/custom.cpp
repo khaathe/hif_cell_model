@@ -353,8 +353,9 @@ void compute_ldh_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 	
 	int ldh_index = pCell->custom_data.find_variable_index("ldh_level");
 	double ldh_level = pCell->custom_data[ldh_index];
-	double s = 1.0;
-	double y = 1.0;
+	int n = 4;
+	double s = pow(4.64, n);
+	double y = pow(hif_concentration, n);
 	double gama = 3.61;
 	double h = (s/(s+y)) + gama * (y/(s+y));
 	double r = 3.4 - 0.54;
