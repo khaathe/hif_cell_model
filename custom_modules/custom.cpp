@@ -223,11 +223,10 @@ void create_default_cell_definition(void)
 	cell_defaults.phenotype.secretion.secretion_rates[oxygen_substrate_index] = 0; 
 	cell_defaults.phenotype.secretion.saturation_densities[oxygen_substrate_index] = 38;
 
-	cell_defaults.custom_data.add_variable("hif_concentration", "dimensionless", hif_base_concentration);
+	cell_defaults.custom_data.add_variable("hif_concentration", "dimensionless", 0.0);
 	cell_defaults.custom_data.add_variable("ldh_level", "dimensionless", 0.0);
 	cell_defaults.custom_data.add_variable("pdh_level", "dimensionless", 0.0);
 	cell_defaults.custom_data.add_variable("pdk_level", "dimensionless", 0.0);
-	
 }
 
 void create_custom_cell_definition(void)
@@ -257,9 +256,9 @@ void create_custom_cell_definition(void)
 	custom_cell.phenotype.death.rates[necrosis_model_index] = 0.0;
 	// test_cell.phenotype.death.rates[apoptosis_model_index] = 0.0;
 
-	// custom_cell.parameters.o2_hypoxic_threshold = parameters.doubles("o2_hypoxic_threshold");
-	// custom_cell.parameters.o2_hypoxic_response = parameters.doubles("o2_hypoxic_response");
-	// custom_cell.parameters.o2_hypoxic_saturation = parameters.doubles("o2_hypoxic_saturation");
+	custom_cell.parameters.o2_hypoxic_threshold = parameters.doubles("o2_hypoxic_threshold");
+	custom_cell.parameters.o2_hypoxic_response = parameters.doubles("o2_hypoxic_response");
+	custom_cell.parameters.o2_hypoxic_saturation = parameters.doubles("o2_hypoxic_saturation");
 	
 	//custom_cell.functions.custom_cell_rule = simulate_metabolism;
 
@@ -342,7 +341,7 @@ void compute_hif_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 		pCell->custom_data[hif_index] = hif_base_concentration;
 	} 
 	else {
-		pCell->custom_data[hif_index] = hif_base_concentration*exp( 2.5*(1-(pO2/760.0) ) );
+		pCell->custom_data[hif_index] = hif_base_concentration*exp( 2.5*(1- (pO2/760.0) ) );
 	}
 }
 
@@ -358,8 +357,9 @@ void compute_ldh_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 	double y = pow(hif_concentration, n);
 	double gama = 3.61;
 	double h = (s/(s+y)) + gama * (y/(s+y));
-	double r = 3.4 - 0.54;
-	ldh_level = ( 0.005 * h - 0.005 * ldh_level ) * r;
+	ldh_level = ( 0.005 * h - 0.005 * ldh_level );
+	//double r = 3.4 - 0.54;
+	//ldh_level = ( 0.005 * h - 0.005 * ldh_level ) * r;
 
 	pCell->custom_data[ldh_index] = ldh_level;
 }
