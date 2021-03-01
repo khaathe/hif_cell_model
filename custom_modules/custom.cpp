@@ -325,6 +325,7 @@ void simulate_metabolism(Cell* pCell, Phenotype& phenotype, double dt)
 {
 	compute_hif_concentration(pCell, phenotype, dt);
 	compute_ldh_concentration(pCell, phenotype, dt);
+	compute_pdk_concentration(pCell, phenotype, dt);
 	compute_pdh_concentration(pCell, phenotype, dt);
 	my_custom_uptake_rates_update(pCell);
 	my_custom_secretion_rates_update(pCell);
@@ -358,13 +359,41 @@ void compute_ldh_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 	double gama = 3.61;
 	double h = (s/(s+y)) + gama * (y/(s+y));
 	ldh_level = ( 0.005 * h - 0.005 * ldh_level );
-	//double r = 3.4 - 0.54;
-	//ldh_level = ( 0.005 * h - 0.005 * ldh_level ) * r;
 
 	pCell->custom_data[ldh_index] = ldh_level;
 }
 
+void compute_pdk_concentration(Cell* pCell, Phenotype& phenotype, double dt)
+{
+	int hif_index = pCell->custom_data.find_variable_index("hif_concentration");
+	double hif_concentration = pCell->custom_data[hif_index];
+	
+	int pdk_index = pCell->custom_data.find_variable_index("pdk_level");
+	double pdk_level = pCell->custom_data[pdk_index];
+	int n = 4;
+	double s = pow(5.0, n);
+	double y = pow(hif_concentration, n);
+	double gama = 5.81;
+	double h = (s/(s+y)) + gama * (y/(s+y));
+	pdk_level = ( 0.005 * h - 0.005 * pdk_level );
+
+	pCell->custom_data[pdk_index] = pdk_level;
+}
+
 void compute_pdh_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 {
+	int pdk_index = pCell->custom_data.find_variable_index("pdk_level");
+	double pdk_level = pCell->custom_data[pdk_index];
+	
+	int pdh_index = pCell->custom_data.find_variable_index("pdh_level");
+	double pdh_level = pCell->custom_data[pdh_index];
+	int n = 4;
+	double s = pow(2.2, n);
+	double y = pow(pdk_level, n);
+	double gama = 0.14;
+	double h = (s/(s+y)) + gama * (y/(s+y));
+	pdh_level = ( 0.005 * h - 0.005 * pdh_level );
 
+	pCell->custom_data[pdh_index] = pdh_level;
 }
+
