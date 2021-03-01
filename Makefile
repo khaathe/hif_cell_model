@@ -30,7 +30,9 @@ ARCH := native # best auto-tuning
 # ARCH := nocona #64-bit pentium 4 or later 
 
 # CFLAGS := -march=$(ARCH) -Ofast -s -fomit-frame-pointer -mfpmath=both -fopenmp -m64 -std=c++11
-CFLAGS := -march=$(ARCH) -O3 -fomit-frame-pointer -mfpmath=both -fopenmp -m64 -std=c++11
+BUILD_DIR := build
+
+CFLAGS := -march=$(ARCH) -O3 -fomit-frame-pointer -mfpmath=both -fopenmp -m64 -std=c++11 -B $(BUILD_DIR)
 
 COMPILE_COMMAND := $(CC) $(CFLAGS) $(ARGS)
 
@@ -51,11 +53,12 @@ pugixml_OBJECTS := pugixml.o
 
 PhysiCell_OBJECTS := $(BioFVM_OBJECTS)  $(pugixml_OBJECTS) $(PhysiCell_core_OBJECTS) $(PhysiCell_module_OBJECTS)
 ALL_OBJECTS := $(PhysiCell_OBJECTS) $(PhysiCell_custom_module_OBJECTS)
-
+	
 # compile the project 
 
-all: main.cpp $(ALL_OBJECTS)
+all: prepare-build-dir copy-o-files main.cpp $(ALL_OBJECTS)
 	$(COMPILE_COMMAND) -o $(PROGRAM_NAME) $(ALL_OBJECTS) main.cpp 
+	mv *.o $(BUILD_DIR)
 
 # PhysiCell core components	
 
@@ -63,7 +66,7 @@ PhysiCell_phenotype.o: ./core/PhysiCell_phenotype.cpp
 	$(COMPILE_COMMAND) -c ./core/PhysiCell_phenotype.cpp
 	
 PhysiCell_digital_cell_line.o: ./core/PhysiCell_digital_cell_line.cpp
-	$(COMPILE_COMMAND) -c ./core/PhysiCell_digital_cell_line.cpp
+	$(COMPILE_COMMAND) -c ./core/PhysiCell_digital_cell_line.cpp 
 
 PhysiCell_cell.o: ./core/PhysiCell_cell.cpp
 	$(COMPILE_COMMAND) -c ./core/PhysiCell_cell.cpp 
@@ -113,32 +116,32 @@ BioFVM_MultiCellDS.o: ./BioFVM/BioFVM_MultiCellDS.cpp
 	$(COMPILE_COMMAND) -c ./BioFVM/BioFVM_MultiCellDS.cpp
 	
 pugixml.o: ./BioFVM/pugixml.cpp
-	$(COMPILE_COMMAND) -c ./BioFVM/pugixml.cpp
+	$(COMPILE_COMMAND) -c ./BioFVM/pugixml.cpp 
 	
 # standard PhysiCell modules
 
 PhysiCell_SVG.o: ./modules/PhysiCell_SVG.cpp
-	$(COMPILE_COMMAND) -c ./modules/PhysiCell_SVG.cpp
+	$(COMPILE_COMMAND) -c ./modules/PhysiCell_SVG.cpp 
 
 PhysiCell_pathology.o: ./modules/PhysiCell_pathology.cpp
-	$(COMPILE_COMMAND) -c ./modules/PhysiCell_pathology.cpp
+	$(COMPILE_COMMAND) -c ./modules/PhysiCell_pathology.cpp 
 
 PhysiCell_MultiCellDS.o: ./modules/PhysiCell_MultiCellDS.cpp
-	$(COMPILE_COMMAND) -c ./modules/PhysiCell_MultiCellDS.cpp
+	$(COMPILE_COMMAND) -c ./modules/PhysiCell_MultiCellDS.cpp 
 
 PhysiCell_various_outputs.o: ./modules/PhysiCell_various_outputs.cpp
-	$(COMPILE_COMMAND) -c ./modules/PhysiCell_various_outputs.cpp
+	$(COMPILE_COMMAND) -c ./modules/PhysiCell_various_outputs.cpp 
 
 PhysiCell_pugixml.o: ./modules/PhysiCell_pugixml.cpp
-	$(COMPILE_COMMAND) -c ./modules/PhysiCell_pugixml.cpp
+	$(COMPILE_COMMAND) -c ./modules/PhysiCell_pugixml.cpp 
 	
 PhysiCell_settings.o: ./modules/PhysiCell_settings.cpp
-	$(COMPILE_COMMAND) -c ./modules/PhysiCell_settings.cpp
+	$(COMPILE_COMMAND) -c ./modules/PhysiCell_settings.cpp 
 	
 # user-defined PhysiCell modules
 
 custom.o: ./custom_modules/custom.cpp 
-	$(COMPILE_COMMAND) -c ./custom_modules/custom.cpp
+	$(COMPILE_COMMAND) -c ./custom_modules/custom.cpp 
 
 # cleanup
 
@@ -152,6 +155,7 @@ reset:
 	cp ./config/PhysiCell_settings-backup.xml ./config/PhysiCell_settings.xml 
 	
 clean:
+	rm -f $(BUILD_DIR)/*.o
 	rm -f *.o
 	rm -f $(PROGRAM_NAME)*
 	
@@ -175,9 +179,7 @@ zip:
 	mv *.zip archives/
 	
 tar:
-	tar --ignore-failed-read -czf latest.tar Makefile* *.cpp *.h BioFVM/* config/* core/* custom_modules/* matlab/* modules/* sample_projects/* 
-	cp latest.tar $$(date +%b_%d_%Y_%H%M).tar
-	cp latest.tar VERSION_$(VERSION).tar
+	mv *.o ${BUILD_DIR}
 	mv *.tar archives/
 
 unzip: 
@@ -185,10 +187,13 @@ unzip:
 	unzip latest.zip 
 	
 untar: 
-	cp ./archives/latest.tar .
-	tar -xzf latest.tar
-
-#user defined function
-
-run : data-cleanup
+	mv *.o ${BUILD_DIR}
+	fi
+	mkdir result/ result/svg
 	make && ./${PROGRAM_NAME} && rm ./result/svg/*.svg && cp ./output/*.svg ./result/svg/
+
+prepare-build-dir :
+	if [ ! -d ${BUILD_DIR} ]; then mkdir ${BUILD_DIR};	fi;
+
+copy-o-files :
+	cp $(wildcard $(BUILD_DIR)/*.o) .
