@@ -108,3 +108,6 @@ void compute_hif_concentration(Cell* pCell, Phenotype& phenotype, double dt);
 void compute_ldh_concentration(Cell* pCell, Phenotype& phenotype, double dt);
 void compute_pdk_concentration(Cell* pCell, Phenotype& phenotype, double dt);
 void compute_pdh_concentration(Cell* pCell, Phenotype& phenotype, double dt);
+
+double compute_h_value(double y, double s, double n, double gamma);
+double compute_gene_level(double gene_level, double A, double D, double h_values[], int size_h);

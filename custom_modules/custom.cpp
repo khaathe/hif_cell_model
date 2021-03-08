@@ -349,16 +349,17 @@ void compute_hif_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 void compute_ldh_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 {
 	int hif_index = pCell->custom_data.find_variable_index("hif_concentration");
-	double hif_concentration = pCell->custom_data[hif_index];
+	double hif_level = pCell->custom_data[hif_index];
 	
 	int ldh_index = pCell->custom_data.find_variable_index("ldh_level");
 	double ldh_level = pCell->custom_data[ldh_index];
-	int n = 4;
-	double s = pow(4.64, n);
-	double y = pow(hif_concentration, n);
-	double gama = 3.61;
-	double h = (s/(s+y)) + gama * (y/(s+y));
-	ldh_level = ( 0.005 * h - 0.005 * ldh_level );
+	
+	int nbRegulator = 2;
+	double h[nbRegulator] = {
+		2.6, //cMyc
+		compute_h_value(hif_level, 4.64, 4, 3.81) //HIF
+	 };
+	ldh_level = compute_gene_level(ldh_level, 0.005, 0.005, h, nbRegulator);
 
 	pCell->custom_data[ldh_index] = ldh_level;
 }
@@ -366,16 +367,18 @@ void compute_ldh_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 void compute_pdk_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 {
 	int hif_index = pCell->custom_data.find_variable_index("hif_concentration");
-	double hif_concentration = pCell->custom_data[hif_index];
+	double hif_level = pCell->custom_data[hif_index];
 	
 	int pdk_index = pCell->custom_data.find_variable_index("pdk_level");
 	double pdk_level = pCell->custom_data[pdk_index];
-	int n = 4;
-	double s = pow(5.0, n);
-	double y = pow(hif_concentration, n);
-	double gama = 5.81;
-	double h = (s/(s+y)) + gama * (y/(s+y));
-	pdk_level = ( 0.005 * h - 0.005 * pdk_level );
+
+	int nbRegulator = 2;
+	double h[nbRegulator] = { 
+		compute_h_value(hif_level, 5.0, 4, 5.81), //HIF
+		0.8, //p53
+		29.6 //ATP
+	 };
+	pdk_level = compute_gene_level(pdk_level, 0.005, 0.005, h, nbRegulator);
 
 	pCell->custom_data[pdk_index] = pdk_level;
 }
@@ -387,13 +390,26 @@ void compute_pdh_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 	
 	int pdh_index = pCell->custom_data.find_variable_index("pdh_level");
 	double pdh_level = pCell->custom_data[pdh_index];
-	int n = 4;
-	double s = pow(2.2, n);
-	double y = pow(pdk_level, n);
-	double gama = 0.14;
-	double h = (s/(s+y)) + gama * (y/(s+y));
-	pdh_level = ( 0.005 * h - 0.005 * pdh_level );
+
+	int nbRegulator = 2;
+	double h[nbRegulator] = { 
+		compute_h_value(pdk_level, 2.2, 4, 0.14), //PDK
+		0.09 //PTEN
+	 };
+	pdh_level = compute_gene_level(pdh_level, 0.005, 0.005, h, nbRegulator);
 
 	pCell->custom_data[pdh_index] = pdh_level;
 }
 
+
+double compute_gene_level(double gene_level, double A, double D, double h_values[], int size_h){
+	double h = 1.0;
+	for (int i=0; i < size_h; i++){
+		h *= h_values[i];
+	}
+	return A*h-D*gene_level;
+}
+
+double compute_h_value(double y, double s, double n, double gamma){
+	return ( pow(s,n)/(pow(s,n)+pow(y,n)) ) + gamma * ( pow(y,n)/( pow(s,n)+pow(y,n) ) );
+}
