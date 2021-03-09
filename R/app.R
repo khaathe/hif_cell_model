@@ -270,48 +270,60 @@ ui <- dashboardPage(
   dashboardBody(tabItems(
     # First tab content
     tabItem(tabName = "dashboard",
-            fluidPage(
-              column(6,
-                     fluidRow(
-                       box(
-                         selectInput("Input_p1", "Parameters", envir_data, multiple = FALSE),
-                         plotOutput("plot1"),
-                         width = 6
-                       ),
-                       box(
-                         selectInput("Input_p2", "Parameters", measured_data, multiple = FALSE),
-                         plotOutput("plot2"),
-                         width = 6
-                       )),
-                       fluidRow(
-                       box(
-                         selectInput("Input_p3", "Parameters", measured_data, multiple = FALSE),
-                         plotOutput("plot3"),
-                         width = 6
-                       ),
-                       box(
-                         selectInput("Input_p5", "Parameters", measured_data, multiple = FALSE),
-                         plotOutput("plot5"),
-                         width = 6
-                       )
-                     )),
-                     column(6, 
-                            fluidRow(
-                            box(
-                         selectInput("Input_p4", "Parameters", measured_data, multiple = FALSE),
-                         plotlyOutput("plot4", height = "900px"),
-                         width = 12,
-                         height="100%"
-                       )
-                     )
-                     ),
-              column(12,
-                     fluidRow(box(
+      fluidPage(
+        column(
+          12,
+          fluidRow(
+            box(
+              selectInput("Input_p1", "Parameters", envir_data, multiple = FALSE),
+              plotOutput("plot1"),
+              width = 6
+            ),
+            box(
+              selectInput("Input_p2", "Parameters", measured_data, multiple = FALSE),
+              plotOutput("plot2"),
+              width = 6
+            )
+          )
+        ),
+        column(
+          12,
+          fluidRow(
+            box(
+              selectInput("Input_p3", "Parameters", measured_data, multiple = FALSE),
+              plotOutput("plot3"),
+              width = 6
+            ),
+            box(
+              selectInput("Input_p5", "Parameters", measured_data, multiple = FALSE),
+              plotOutput("plot5"),
+              width = 6
+            )
+          )
+        ),
+        column(
+          12, 
+          fluidRow(
+            box(
+              selectInput("Input_p4", "Parameters", measured_data, multiple = FALSE),
+              plotlyOutput("plot4", height = "900px"),
+              width = 12,
+              height="100%"
+            )
+          )
+        ),
+        column(
+          12,
+          fluidRow(
+            box(
                        selectInput("Input_p6", "Parameters", measured_data, multiple = FALSE),
                        plotOutput("plot6"),
                        width = 12
-                     ))))
-            ),
+            )
+          )
+        )
+      )
+    ),
     # Second tab content
     tabItem(tabName = "widgets",
             h2("Widgets tab content"))
