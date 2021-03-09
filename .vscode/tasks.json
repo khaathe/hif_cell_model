@@ -7,6 +7,7 @@
 			"command": "/usr/bin/make",
 			"args": [
 				"ARGS='-g'",
+				"data-cleanup",
 				"all"
 			],
 			"group": "build"

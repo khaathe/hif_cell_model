@@ -295,8 +295,8 @@ ui <- dashboardPage(
               width = 6
             ),
             box(
-              selectInput("Input_p5", "Parameters", measured_data, multiple = FALSE),
-              plotOutput("plot5"),
+              selectInput("Input_p4", "Parameters", measured_data, multiple = FALSE),
+              plotOutput("plot4"),
               width = 6
             )
           )
@@ -305,8 +305,8 @@ ui <- dashboardPage(
           12, 
           fluidRow(
             box(
-              selectInput("Input_p4", "Parameters", measured_data, multiple = FALSE),
-              plotlyOutput("plot4", height = "900px"),
+              selectInput("Input_p5", "Parameters", measured_data, multiple = FALSE),
+              plotlyOutput("plot5", height = "900px"),
               width = 12,
               height="100%"
             )
@@ -363,18 +363,18 @@ server <- function(input, output, session) {
     EnvironmentMAP("oxygen", input$slider_time + 1)
   })
   output$plot2 <- renderPlot({
-    plotSpheroidAtTIME(input$Input_p2, input$slider_time + 1)
+    plotCellatTime(input$Input_p2, input$slider_time + 1)
   })
   output$plot3 <- renderPlot({
-    plotCellatTime(input$Input_p3, input$slider_time + 1)
+    plotSpheroidAtTIME(input$Input_p3, input$slider_time + 1)
   })
   
-  output$plot4 <- renderPlotly({
-    plotSpheroid3DAtTIME(input$Input_p4, input$slider_time + 1)
+  output$plot4 <- renderPlot({
+    plotSpheroidAtTIME(input$Input_p4, input$slider_time + 1)
   })
   
-  output$plot5 <- renderPlot({
-    plotSpheroidAtTIME(input$Input_p5, input$slider_time + 1)
+  output$plot5 <- renderPlotly({
+    plotSpheroid3DAtTIME(input$Input_p5, input$slider_time + 1)
   })
   
   output$plot6 <- renderPlot({

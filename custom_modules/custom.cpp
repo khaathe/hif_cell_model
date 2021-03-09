@@ -344,6 +344,20 @@ void compute_hif_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 	else {
 		pCell->custom_data[hif_index] = hif_base_concentration*exp( 2.5*(1- (pO2/760.0) ) );
 	}
+
+	/* double hif_level = pCell->custom_data[hif_index];
+	int nbRegulator = 2;
+	double h[nbRegulator] = {
+		2.0, //cMyc
+		3.0, //mTor
+		0.4, //p53
+		0.36, //PTEN
+		10.94, //Lactate
+		10.0, //ROS
+		compute_h_value(hif_level, 4.64, 4, 3.81) //HIF
+	 };
+	hif_level = compute_gene_level(hif_level, 0.005, 0.005, h, nbRegulator);
+	pCell->custom_data[hif_index] = hif_level; */
 }
 
 void compute_ldh_concentration(Cell* pCell, Phenotype& phenotype, double dt)
