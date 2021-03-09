@@ -267,67 +267,62 @@ ui <- dashboardPage(
     )
   ),
   ## Body content
-  dashboardBody(tabItems(
-    # First tab content
-    tabItem(tabName = "dashboard",
-      fluidPage(
-        column(
-          12,
-          fluidRow(
-            box(
-              selectInput("Input_p1", "Parameters", envir_data, multiple = FALSE),
-              plotOutput("plot1"),
-              width = 6
-            ),
-            box(
-              selectInput("Input_p2", "Parameters", measured_data, multiple = FALSE),
-              plotOutput("plot2"),
-              width = 6
+  dashboardBody(
+    tabItems(
+      # First tab content
+      tabItem(
+        tabName = "dashboard",
+        fluidPage(
+          column(
+            12,
+            fluidRow(
+              box(
+                selectInput("Input_p1", "Parameters", envir_data, multiple = FALSE),
+                plotOutput("plot1"),
+                width = 6
+              ),
+              box(
+                selectInput("Input_p2", "Parameters", measured_data, multiple = FALSE),
+                plotOutput("plot2"),
+                width = 6
+              )
             )
-          )
-        ),
-        column(
-          12,
-          fluidRow(
-            box(
-              selectInput("Input_p3", "Parameters", measured_data, multiple = FALSE),
-              plotOutput("plot3"),
-              width = 6
-            ),
-            box(
-              selectInput("Input_p4", "Parameters", measured_data, multiple = FALSE),
-              plotOutput("plot4"),
-              width = 6
+          ),
+          column(
+            12,
+            fluidRow(
+              box(
+                selectInput("Input_p3", "Parameters", measured_data, multiple = FALSE),
+                plotOutput("plot3"),
+                width = 6
+              ),
+              box(
+                selectInput("Input_p4", "Parameters", measured_data, multiple = FALSE),
+                plotOutput("plot4"),
+                width = 6
+              )
             )
-          )
-        ),
-        column(
-          12, 
-          fluidRow(
-            box(
-              selectInput("Input_p5", "Parameters", measured_data, multiple = FALSE),
-              plotlyOutput("plot5", height = "900px"),
-              width = 12,
-              height="100%"
-            )
-          )
-        ),
-        column(
-          12,
-          fluidRow(
-            box(
-                       selectInput("Input_p6", "Parameters", measured_data, multiple = FALSE),
-                       plotOutput("plot6"),
-                       width = 12
+          ),
+          column(
+            12, 
+            fluidRow(
+              box(
+                selectInput("Input_p5", "Parameters", measured_data, multiple = FALSE),
+                plotlyOutput("plot5", height = "900px"),
+                width = 12,
+                height="100%"
+              )
             )
           )
         )
+      ),
+      # Second tab content
+      tabItem(
+        tabName = "widgets",
+        h2("Widgets tab content")
       )
-    ),
-    # Second tab content
-    tabItem(tabName = "widgets",
-            h2("Widgets tab content"))
-  ))
+    )
+  )
 )
 
 
@@ -375,12 +370,7 @@ server <- function(input, output, session) {
   
   output$plot5 <- renderPlotly({
     plotSpheroid3DAtTIME(input$Input_p5, input$slider_time + 1)
-  })
-  
-  output$plot6 <- renderPlot({
-    plotSpheroidAtTIME(input$Input_p6, input$slider_time + 1)
-  })
-  
+  })  
   
 }
 
