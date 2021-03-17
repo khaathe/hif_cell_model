@@ -191,4 +191,5 @@ untar:
 #user defined function
 
 run : data-cleanup
+	find result/svg/ -name "*.svg" -delete
 	make && ./${PROGRAM_NAME} && cp ./output/*.svg ./result/svg/
