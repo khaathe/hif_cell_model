@@ -71,6 +71,7 @@
 
 Cell_Definition custom_cell;
 double hif_base_concentration;
+double time_step;
 
 void create_cell_types( void )
 {
@@ -92,6 +93,8 @@ void create_cell_types( void )
 	build_cell_definitions_maps(); 
 	display_cell_definitions( std::cout ); 
 	
+	time_step = phenotype_dt;
+
 	return; 
 }
 
@@ -375,7 +378,7 @@ void compute_ldh_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 	 };
 	ldh_level = compute_gene_level(ldh_level, 0.005, 0.005, h, nbRegulator);
 
-	pCell->custom_data[ldh_index] = ldh_level;
+	pCell->custom_data[ldh_index] += time_step * ldh_level ;
 }
 
 void compute_pdk_concentration(Cell* pCell, Phenotype& phenotype, double dt)
@@ -394,7 +397,7 @@ void compute_pdk_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 	 };
 	pdk_level = compute_gene_level(pdk_level, 0.005, 0.005, h, nbRegulator);
 
-	pCell->custom_data[pdk_index] = pdk_level;
+	pCell->custom_data[pdk_index] += time_step * pdk_level;
 }
 
 void compute_pdh_concentration(Cell* pCell, Phenotype& phenotype, double dt)
@@ -412,7 +415,7 @@ void compute_pdh_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 	 };
 	pdh_level = compute_gene_level(pdh_level, 0.005, 0.005, h, nbRegulator);
 
-	pCell->custom_data[pdh_index] = pdh_level;
+	pCell->custom_data[pdh_index] += time_step * pdh_level;
 }
 
 
