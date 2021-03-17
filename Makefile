@@ -191,6 +191,6 @@ untar:
 #user defined function
 
 run : data-cleanup
-	if [ ! -d "result/svg/"]; then mkdir -p result/svg/ fi
+	if [ ! -d "result/svg/"]; then mkdir -p result/svg/; fi
 	find result/svg/ -name "*.svg" -delete
 	make && ./${PROGRAM_NAME} && cp ./output/*.svg ./result/svg/
