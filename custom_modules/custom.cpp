@@ -341,14 +341,14 @@ void compute_hif_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 	
 	int hif_index = pCell->custom_data.find_variable_index("hif_concentration");
 
-	if ( pO2 >= pCell->parameters.o2_hypoxic_response ) {
+	/* if ( pO2 >= pCell->parameters.o2_hypoxic_response ) {
 		pCell->custom_data[hif_index] = hif_base_concentration;
 	} 
 	else {
 		pCell->custom_data[hif_index] = hif_base_concentration*exp( 2.5*(1- (pO2/760.0) ) );
-	}
+	} */
 
-	/* double hif_level = pCell->custom_data[hif_index];
+	double hif_level = pCell->custom_data[hif_index];
 	int nbRegulator = 7;
 	double h[nbRegulator] = {
 		2.0, //cMyc
@@ -360,8 +360,11 @@ void compute_hif_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 		10.0, //ROS
 		compute_h_value(hif_level, 4.64, 4, 3.81) //HIF
 	 };
-	hif_level = compute_gene_level(hif_level, 0.005, 0.005, h, nbRegulator);
-	pCell->custom_data[hif_index] += time_step * hif_level; */
+	double s_O2 = 0.02*760;
+	double gamma_o2 = 40;
+	double h_o2 = compute_h_value(pO2, s_O2, 4, gamma_o2);
+	hif_level = compute_gene_level(hif_level, 0.005, 0.005*h_o2, h, nbRegulator);
+	pCell->custom_data[hif_index] += time_step * hif_level;
 }
 
 void compute_ldh_concentration(Cell* pCell, Phenotype& phenotype, double dt)
