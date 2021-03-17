@@ -304,11 +304,26 @@ ui <- dashboardPage(
             )
           ),
           column(
+            12,
+            fluidRow(
+              box(
+                selectInput("Input_p6", "Parameters", measured_data, multiple = FALSE),
+                plotOutput("plot6"),
+                width = 6
+              ),
+              box(
+                selectInput("Input_p7", "Parameters", measured_data, multiple = FALSE),
+                plotOutput("plot7"),
+                width = 6
+              )
+            )
+          ),
+          column(
             12, 
             fluidRow(
               box(
-                selectInput("Input_p5", "Parameters", measured_data, multiple = FALSE),
-                plotlyOutput("plot5", height = "900px"),
+                selectInput("Input_p8", "Parameters", measured_data, multiple = FALSE),
+                plotlyOutput("plot8", height = "900px"),
                 width = 12,
                 height="100%"
               )
@@ -367,9 +382,18 @@ server <- function(input, output, session) {
   output$plot4 <- renderPlot({
     plotSpheroidAtTIME(input$Input_p4, input$slider_time + 1)
   })
+  output$plot5 <- renderPlot({
+    plotSpheroidAtTIME(input$Input_p5, input$slider_time + 1)
+  })
+  output$plot6 <- renderPlot({
+    plotSpheroidAtTIME(input$Input_p6, input$slider_time + 1)
+  })
+  output$plot7 <- renderPlot({
+    plotSpheroidAtTIME(input$Input_p7, input$slider_time + 1)
+  })
   
-  output$plot5 <- renderPlotly({
-    plotSpheroid3DAtTIME(input$Input_p5, input$slider_time + 1)
+  output$plot8 <- renderPlotly({
+    plotSpheroid3DAtTIME(input$Input_p8, input$slider_time + 1)
   })  
   
 }
