@@ -94,7 +94,8 @@ void setup_microenvironment( void );
 std::vector<std::string> my_coloring_function( Cell* );
 
 //custom create function
-void create_circular_tissue (double center_x, double center_y, Cell_Definition& cell_definition, double tissue_radius, double spacing);
+void place_cells_in_sphere (double center_x, double center_y, double center_z, Cell_Definition& cell_definition, double sphere_radius, double spacing);
+void place_cells_in_circle (double center_x, double center_y, double z_axis, Cell_Definition& cell_definition, double circle_radius, double spacing);
 void create_default_cell_definition(void);
 void create_custom_cell_definition(void);
 

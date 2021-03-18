@@ -150,9 +150,16 @@ void setup_tissue( void )
 	double spacing = 2.0*cell_radius;
 	double tissue_radius = parameters.doubles("tissue_radius");
 
-	// create_circular_tissue(-500.0, 0.0, cell_defaults, tissue_radius, spacing);
-	// create_circular_tissue(500.0, 0.0, custom_cell, tissue_radius, spacing);
-	create_circular_tissue(0.0, 0.0, custom_cell, tissue_radius, spacing);
+	double center_x = 0.0;
+	double center_y =0.0;
+	double center_z = 0.0;
+
+	if ( default_microenvironment_options.simulate_2D ) {
+		place_cells_in_circle(center_x, center_y, center_z, custom_cell, tissue_radius, spacing);
+	} 
+	else {
+		place_cells_in_sphere(center_x, center_y, center_z, custom_cell, tissue_radius, spacing);
+	}
 
 	return; 
 }
@@ -272,31 +279,39 @@ void create_custom_cell_definition(void)
 	// custom_cell.custom_data.add_variable("pdk_level", "dimensionless", 0.0);
 }
 
-void create_circular_tissue (double center_x, double center_y, Cell_Definition& cell_definition, double tissue_radius, double spacing)
+void place_cells_in_sphere (double center_x, double center_y, double center_z, Cell_Definition& cell_definition, double sphere_radius, double spacing)
+{
+	for (double z_plane = center_z; z_plane < sphere_radius; z_plane += spacing ) {
+		double circle_radius = sqrt( pow(sphere_radius, 2) - pow(z_plane,2));
+		place_cells_in_circle(center_x, center_y, z_plane, custom_cell, circle_radius, spacing);
+		place_cells_in_circle(center_x, center_y, -1*z_plane, custom_cell, circle_radius, spacing);
+	}
+}
+
+void place_cells_in_circle (double center_x, double center_y, double z_axis, Cell_Definition& cell_definition, double circle_radius, double spacing)
 {
 	Cell* pC;
 
 	int i = 0;
 	int j = 0;
-	double z = 0.0;
 	double dist = 0.0;
 	
-	while (dist < tissue_radius)
+	while (dist < circle_radius)
 	{
-		while ( dist < tissue_radius)
+		while ( dist < circle_radius)
 		{
 			pC = create_cell(cell_definition);
-			pC -> assign_position( (center_x+i*spacing), (center_y+j*spacing), z);
+			pC -> assign_position( (center_x+i*spacing), (center_y+j*spacing), z_axis);
 			
 			pC = create_cell(cell_definition);
-			pC -> assign_position( (center_x+i*spacing), (center_y-j*spacing), z);
+			pC -> assign_position( (center_x+i*spacing), (center_y-j*spacing), z_axis);
 			
 			
 			pC = create_cell(cell_definition);
-			pC -> assign_position( (center_x-i*spacing), (center_y+j*spacing), z);
+			pC -> assign_position( (center_x-i*spacing), (center_y+j*spacing), z_axis);
 			
 			pC = create_cell(cell_definition);
-			pC -> assign_position( (center_x-i*spacing), (center_y-j*spacing), z);
+			pC -> assign_position( (center_x-i*spacing), (center_y-j*spacing), z_axis);
 
 			j += 1;
 			dist = hypot( center_x-(center_x+i*spacing), center_y-(center_y+j*spacing) );
