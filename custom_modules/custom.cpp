@@ -171,7 +171,7 @@ std::vector<std::string> my_coloring_function( Cell* pCell )
 	std::vector<std::string> output = false_cell_coloring_cytometry(pCell); 
 	int hif_index = pCell->custom_data.find_variable_index("hif_concentration");
 		
-	if( pCell->phenotype.death.dead == false && pCell->type == 1 )
+	/* if( pCell->phenotype.death.dead == false && pCell->type == 1 )
 	{
 		 output[0] = "black"; 
 		 std::string color = "rgb(255, 0, 0)";
@@ -179,7 +179,7 @@ std::vector<std::string> my_coloring_function( Cell* pCell )
 			 color = "rgb(0,0,255)";
 		 }
 		 output[2] = color; 
-	}
+	} */
 	
 	return output; 
 }
