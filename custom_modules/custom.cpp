@@ -372,8 +372,7 @@ void compute_hif_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 		0.36, //PTEN
 		1.5, //RAS
 		10.94, //Lactate
-		10.0, //ROS
-		compute_h_value(hif_level, 4.64, 4, 3.81) //HIF
+		10.0 //ROS
 	 };
 	double s_O2 = 0.02*760;
 	double gamma_o2 = 40;
@@ -436,7 +435,6 @@ void compute_pdh_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 
 	pCell->custom_data[pdh_index] += time_step * pdh_level;
 }
-
 
 double compute_gene_level(double gene_level, double A, double D, double h_values[], int size_h){
 	double h = 1.0;
