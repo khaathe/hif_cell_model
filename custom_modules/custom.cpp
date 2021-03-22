@@ -235,8 +235,8 @@ void create_default_cell_definition(void)
 
 	cell_defaults.custom_data.add_variable("hif_concentration", "dimensionless", 0.0);
 	cell_defaults.custom_data.add_variable("ldh_level", "dimensionless", 0.0);
-	cell_defaults.custom_data.add_variable("pdh_level", "dimensionless", 0.0);
 	cell_defaults.custom_data.add_variable("pdk_level", "dimensionless", 0.0);
+	cell_defaults.custom_data.add_variable("pdh_level", "dimensionless", 0.0);
 }
 
 void create_custom_cell_definition(void)
