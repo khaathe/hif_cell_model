@@ -373,7 +373,7 @@ void compute_hif_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 		1.5, //RAS
 		10.94, //Lactate
 		10.0 //ROS
-	 };
+	};
 	double s_O2 = 0.02*760;
 	double gamma_o2 = 40;
 	double h_o2 = compute_h_value(pO2, s_O2, 4, gamma_o2);
@@ -389,11 +389,15 @@ void compute_ldh_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 	int ldh_index = pCell->custom_data.find_variable_index("ldh_level");
 	double ldh_level = pCell->custom_data[ldh_index];
 	
-	int nbRegulator = 2;
+	/* int nbRegulator = 2;
 	double h[nbRegulator] = {
 		2.6, //cMyc
 		compute_h_value(hif_level, 4.64, 4, 3.81) //HIF
-	 };
+	}; */
+	int nbRegulator = 1;
+	double h[nbRegulator] = {
+		compute_h_value(hif_level, 4.64, 4, 3.81) //HIF
+	};
 	ldh_level = compute_gene_level(ldh_level, 0.005, 0.005, h, nbRegulator);
 
 	pCell->custom_data[ldh_index] += time_step * ldh_level ;
@@ -407,12 +411,16 @@ void compute_pdk_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 	int pdk_index = pCell->custom_data.find_variable_index("pdk_level");
 	double pdk_level = pCell->custom_data[pdk_index];
 
-	int nbRegulator = 3;
+	/* int nbRegulator = 3;
 	double h[nbRegulator] = { 
 		compute_h_value(hif_level, 5.0, 4, 6.97), //HIF
 		0.8, //p53
 		29.6 //ATP
-	 };
+	}; */
+	int nbRegulator = 1;
+	double h[nbRegulator] = { 
+		compute_h_value(hif_level, 5.0, 4, 6.97) //HIF
+	};
 	pdk_level = compute_gene_level(pdk_level, 0.005, 0.005, h, nbRegulator);
 
 	pCell->custom_data[pdk_index] += time_step * pdk_level;
@@ -426,11 +434,15 @@ void compute_pdh_concentration(Cell* pCell, Phenotype& phenotype, double dt)
 	int pdh_index = pCell->custom_data.find_variable_index("pdh_level");
 	double pdh_level = pCell->custom_data[pdh_index];
 
-	int nbRegulator = 2;
+	/* int nbRegulator = 2;
 	double h[nbRegulator] = { 
 		compute_h_value(pdk_level, 2.2, 4, 0.14), //PDK
 		0.09 //PTEN
-	 };
+	}; */
+	int nbRegulator = 1;
+	double h[nbRegulator] = { 
+		compute_h_value(pdk_level, 2.2, 4, 0.14) //PDK
+	};
 	pdh_level = compute_gene_level(pdh_level, 0.005, 0.005, h, nbRegulator);
 
 	pCell->custom_data[pdh_index] += time_step * pdh_level;
